@@ -107,6 +107,8 @@ def main(args):
 
     # path for saving the files:
     save_path = args.out_dir
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
 
     print("Generating scale synchronized images ...")
     for img_num in tqdm(range(1, args.num_samples + 1)):
@@ -122,8 +124,10 @@ def main(args):
         ss_image = ss_images[args.out_depth]
 
         # save the ss_image in the directory
-        imageio.imwrite(os.path.join(save_path, str(img_num) + ".png"),
-               ss_image.squeeze(0).permute(1, 2, 0).cpu())
+        ss_image = ss_image.squeeze(0).permute(1, 2, 0).cpu().numpy()
+        if ss_image.dtype == np.float32:
+            ss_image = (np.clip(ss_image, 0, 1) * 255).astype(np.uint8)
+        imageio.imwrite(os.path.join(save_path, str(img_num) + ".png"), ss_image)
 
     print("Generated %d images at %s" % (args.num_samples, save_path))
 
