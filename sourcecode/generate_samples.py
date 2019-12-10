@@ -7,7 +7,7 @@ import os
 from torch.backends import cudnn
 from MSG_GAN.GAN import Generator
 from torch.nn.functional import interpolate
-from scipy.misc import imsave
+import imageio
 from tqdm import tqdm
 
 # turn on the fast GPU processing mode on
@@ -122,7 +122,7 @@ def main(args):
         ss_image = ss_images[args.out_depth]
 
         # save the ss_image in the directory
-        imsave(os.path.join(save_path, str(img_num) + ".png"),
+        imageio.imwrite(os.path.join(save_path, str(img_num) + ".png"),
                ss_image.squeeze(0).permute(1, 2, 0).cpu())
 
     print("Generated %d images at %s" % (args.num_samples, save_path))
